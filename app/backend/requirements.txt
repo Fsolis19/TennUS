@@ -82,7 +82,7 @@ platformdirs==4.3.7
 prompt_toolkit==3.0.50
 protobuf==3.20.1
 psutil==7.0.0
-psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pure_eval==0.2.3
 py-cpuinfo==9.0.0
 py4j==0.10.9.7
@@ -93,7 +93,6 @@ pydantic_core==2.33.2
 pydeck==0.9.1
 Pygments==2.19.1
 pyparsing==3.0.9
-pyspark==3.5.5
 python-dateutil==2.8.2
 python-decouple==3.8
 python-dotenv==1.1.0
@@ -101,7 +100,6 @@ python-engineio==4.12.2
 python-multipart==0.0.20
 python-socketio==5.13.0
 pytz==2025.1
-pywin32==310
 PyYAML==6.0.2
 pyzmq==26.3.0
 referencing==0.36.2
