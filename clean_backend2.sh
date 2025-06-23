@@ -11,7 +11,6 @@ for pid in $(lsof -i :8000 -t 2>/dev/null); do
   kill -9 "$pid"
 done
 
-# Crear entorno virtual si no existe
 if [ ! -d "$VENV_DIR" ]; then
   echo "Creando entorno virtual en $VENV_DIR..."
   $PYTHON_BIN -m venv "$VENV_DIR"
