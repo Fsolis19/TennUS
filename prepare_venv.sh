@@ -3,7 +3,7 @@
 VENV_DIR="app/backend/venv"
 REQUIREMENTS_FILE="app/backend/requirements.txt"
 INSTALL_MARKER="$VENV_DIR/.installed"
-PYTHON_BIN="python3"  
+PYTHON_BIN="python"  
 
 echo "Cerrando procesos en el puerto 8000..."
 for pid in $(lsof -i :8000 -t 2>/dev/null); do
