@@ -123,7 +123,6 @@ def interpolation(coords):
 
 
 def generate_ball_statistics(ball_track, dists, fps):
-
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     stats_dir = os.path.join(base_dir, 'tennis_statistics', 'ball_stats')
     os.makedirs(stats_dir, exist_ok=True)
@@ -256,97 +255,3 @@ def generate_ball_statistics(ball_track, dists, fps):
  
     with open(os.path.join(stats_dir, 'ball_track_projected_with_speed.json'), 'w') as f:
         json.dump(projected_with_speed, f, indent=2)
-
-    #speeds_filtered = [p['speed_mps'] for p in projected_with_speed if p['speed_mps'] > 0]
-    #if speeds_filtered:
-        #average_point_speed = round(np.mean(speeds_filtered), 2)
-    #else:
-        #average_point_speed = -1.0
-
-    #with open(os.path.join(stats_dir, 'point_speed_summary.json'), 'w') as f:
-        #json.dump({'average_point_speed_mps': average_point_speed}, f, indent=2)
-
-
-'''
-
-def generate_ball_statistics(ball_track, dists, fps):
-
-    import os
-    import json
-    import numpy as np
-    import cv2
-    import glob
-
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    stats_dir = os.path.join(base_dir, 'tennis_statistics', 'ball_stats')
-    os.makedirs(stats_dir, exist_ok=True)
-
-    stats = []
-    for i, (pt, dist) in enumerate(zip(ball_track, dists)):
-        x, y = pt
-        stats.append({
-            'frame': i,
-            'x_px': x if x is not None else None,
-            'y_px': y if y is not None else None,
-            'dist_px': dist
-        })
-
-    with open(os.path.join(stats_dir, 'ball_track.json'), 'w') as f:
-        json.dump(stats, f, indent=2)
-
-    # Restaurar homografía para proyectar a coordenadas reales
-    stats_files_dir = os.path.join(base_dir, 'tennis_statistics', 'stats_files')
-    merged_candidates = sorted(
-        glob.glob(os.path.join(stats_files_dir, 'movement_point_*_merged.json')),
-        key=os.path.getmtime,
-        reverse=True
-    )
-
-    if not merged_candidates:
-        raise FileNotFoundError("No se encontró ningún archivo movement_point_*_merged.json")
-
-    merged_path = merged_candidates[0]
-    with open(merged_path) as f:
-        merged = json.load(f)
-
-    src_pts = np.array(merged.get("src_pts", []), dtype=np.float32)
-    dst_pts = np.array(merged.get("dst_pts", []), dtype=np.float32)
-
-    if src_pts.shape[0] < 4 or dst_pts.shape[0] < 4:
-        raise ValueError(f"src_pts o dst_pts inválidos en {merged_path}: se requieren al menos 4 puntos")
-
-    H, _ = cv2.findHomography(src_pts, dst_pts)
-
-    projected_track = []
-    for entry in stats:
-        if entry["x_px"] is not None and entry["y_px"] is not None:
-            pt_img = np.array([[[entry["x_px"], entry["y_px"]]]], dtype=np.float32)
-            pt_proj = cv2.perspectiveTransform(pt_img, H)[0][0]
-            projected_track.append({
-                'frame': int(entry['frame']),
-                'x_m': float(pt_proj[0]),
-                'y_m': float(pt_proj[1]),
-                'dist_px': float(entry['dist_px']) if entry['dist_px'] != -1 else -1
-            })
-        else:
-            projected_track.append({
-                'frame': int(entry['frame']),
-                'x_m': None,
-                'y_m': None,
-                'dist_px': float(entry['dist_px']) if entry['dist_px'] != -1 else -1
-            })
-
-    # Calcular velocidades proyectadas entre frames consecutivos
-    for i in range(len(projected_track)):
-        if i == 0 or projected_track[i]['x_m'] is None or projected_track[i]['y_m'] is None or projected_track[i - 1]['x_m'] is None or projected_track[i - 1]['y_m'] is None:
-            projected_track[i]['speed_mps'] = -1.0
-        else:
-            dx = projected_track[i]['x_m'] - projected_track[i - 1]['x_m']
-            dy = projected_track[i]['y_m'] - projected_track[i - 1]['y_m']
-            dist = np.sqrt(dx ** 2 + dy ** 2)
-            projected_track[i]['speed_mps'] = round(dist * fps, 2)
-
-    with open(os.path.join(stats_dir, 'ball_track_projected_with_speed.json'), 'w') as f:
-        json.dump(projected_track, f, indent=2)
-
-'''
