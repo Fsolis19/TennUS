@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tennus-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/backend:/app/app/backend     
+      - ./models_weigths:/app/models_weigths
+      - ./tracknetV2:/app/tracknetV2
+      - ./tennis_statistics:/app/tennis_statistics
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]   
+    stdin_open: true
+    tty: true
+    networks:
+      - tennus-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: tennus-frontend
+    ports:
+      - "3000:80"  
+    networks:
+      - tennus-network
+    depends_on:
+      - backend
+
+networks:
+  tennus-network:
+    driver: bridge

@@ -1,0 +1,17 @@
+names:
+- ball
+- in-doubles
+- in-serve
+- in-singles
+- net
+- player
+nc: 6
+roboflow:
+  license: CC BY 4.0
+  project: tennus
+  url: https://universe.roboflow.com/felsolgus-workspace/tennus/dataset/2
+  version: 2
+  workspace: felsolgus-workspace
+test: ../TennUS-2/test/images
+train: ../TennUS-2/train/images
+val: ../TennUS-2/valid/images
